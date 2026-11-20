@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar — radar-3</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-inner">
+    <div>
+      <h1>Token Radar</h1>
+      <p class="tagline">Which pre-token protocols would be worth the most if they launched one — ranked from the snapshot alone.</p>
+    </div>
+    <div class="badges">
+      <span class="badge" id="badge-asof">—</span>
+      <span class="badge badge-model">model radar-3</span>
+      <span class="badge" id="badge-count">—</span>
+    </div>
+  </div>
+</header>
+
+<section class="top10" aria-label="Top 10">
+  <h2>Top 10 by implied value</h2>
+  <div class="top10-grid" id="top10"></div>
+</section>
+
+<main class="layout">
+  <aside class="filters" aria-label="Filters">
+    <h2>Filter the board</h2>
+    <label class="field">Search name
+      <input type="search" id="f-search" placeholder="Type a protocol name…" autocomplete="off">
+    </label>
+    <label class="field">Category
+      <select id="f-category"><option value="">All categories</option></select>
+    </label>
+    <label class="field">Chain
+      <select id="f-chain"><option value="">All chains</option></select>
+    </label>
+    <fieldset class="field">
+      <legend>Board</legend>
+      <label class="radio"><input type="radio" name="tab" value="pre" checked> Pre-token</label>
+      <label class="radio"><input type="radio" name="tab" value="live"> Live-token</label>
+    </fieldset>
+    <label class="field">Minimum TVL
+      <input type="range" id="f-tvl" min="0" max="1000" step="10" value="0">
+      <span class="range-value" id="f-tvl-label">$0</span>
+    </label>
+    <p class="filter-note" id="filter-count">—</p>
+    <button class="reset" id="f-reset" type="button">Reset filters</button>
+  </aside>
+
+  <section class="boardwrap">
+    <div class="tabs" role="tablist">
+      <button class="tab active" id="tab-pre" type="button">Pre-token board</button>
+      <button class="tab" id="tab-live" type="button">Live-token market</button>
+    </div>
+    <p class="board-note" id="board-note"></p>
+    <div class="table-scroll">
+      <table id="board">
+        <thead><tr id="board-head"></tr></thead>
+        <tbody id="board-body"></tbody>
+      </table>
+    </div>
+    <div class="detail" id="detail">
+      <p class="detail-empty">Click any row to open its detail: snapshot figures, the five model factors, why it ranks where it does, and its 8-step farm plan.</p>
+    </div>
+  </section>
+</main>
+
+<section class="how" id="how">
+  <h2>How this radar works</h2>
+  <p><strong>Model radar-3.</strong> Every implied value comes only from the snapshot's own figures — TVL, 7-day change, listing date, chains and category. No protocol name is special-cased; the same formula scores all 240 rows:</p>
+  <pre class="formula">implied = TVL × 0.20 × growthF × chainF × categoryF × maturityF
+growthF   = 1 + clamp(change_7d, −40, +100) / 100 × 0.8   (unknown change = 0)
+chainF    = 1 + 0.03 × min(chains, 10)
+categoryF = 0.85 + 0.30 × √(protocol TVL / total TVL of its category)
+maturityF = 0.55 + 0.45 × ln(1 + min(age_days, 1460)) / ln(1461)   (unknown age = 365 days)</pre>
+  <p><strong>Source.</strong> Data: DefiLlama protocols snapshot, fetched 2026-11-14 (as_of 2026-11-14, floor $50M). The board holds the full 40-protocol watchlist plus the 200 largest pre-token protocols below the floor — 240 rows. The live-token tab shows the 24 largest market caps among protocols whose token already trades, CEX category excluded; their market caps are the market's own values and are never mixed with implied values.</p>
+  <p><strong>Honesty.</strong> “Pre-token” means the snapshot <em>records no token</em> for the protocol — the record is not proof it has none. Costs and times in the farm plans are <em>estimates</em>. The snapshot carries <em>no points or airdrop data</em>, so this radar claims no specific points or airdrop program for any protocol; step 6 of every plan only tells you to check the protocol's official rewards page yourself.</p>
+  <h3>Gas estimates (per transaction, generic)</h3>
+  <table class="gas" id="gas-table">
+    <thead><tr><th>Chain</th><th>Estimate</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <p class="fineprint">Gas figures are rough estimates for a simple transaction and move with network congestion; they are not quotes.</p>
+</section>
+
+<footer class="foot">
+  <p>Token Radar · model radar-3 · data DefiLlama, as_of 2026-11-14 · implied values are this entry's own claim, never a prediction that a token will launch or what it will trade at.</p>
+</footer>
+
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
